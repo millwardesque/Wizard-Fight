@@ -7,17 +7,27 @@ using System.Collections.Generic;
 public class CombatantActions : MonoBehaviour {
 	GameObject targetedObject;
 	List<CombatantAction> actions;
+	public GameObject launchPoint;
 
 	// Use this for initialization
 	void Awake () {
+		if (!launchPoint) {
+			Debug.LogError("Unable to initialize combatant actions for '" + gameObject.name + "': No launch point is set.");
+		}
+
 		// Load the actions.
+		GameObject actionsManagerObj = GameObject.FindGameObjectWithTag("Actions Manager");
+		if (!actionsManagerObj || !actionsManagerObj.GetComponent<ActionsManager>()) {
+			Debug.LogError ("Unable to initialize combatant actions for '" + gameObject.name + "': No object has the Actions Manager tag, or the tagged Actions Manager is missing the Actions Manager component.");
+		}
+		ActionsManager actionsManager = actionsManagerObj.GetComponent<ActionsManager>();
 		actions = new List<CombatantAction>();
 
 		// @TODO Load these per-combatant from a file / player-prefs / DB.
-		actions.Add (new FixedDamageAction("Energy blast", gameObject, 7));
-		actions.Add (new FixedDamageAction("Energy wave", gameObject, 3));
-		actions.Add (new FixedDamageAction("Slap", gameObject, 1));
-		actions.Add (new FixedDamageAction("Burn", gameObject, 5));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Blast", gameObject, null, 7));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Wave", gameObject, null, 3));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Slap", gameObject, null, 1));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Burn", gameObject, null, 5));
 	}
 
 	/// <summary>
@@ -48,5 +58,21 @@ public class CombatantActions : MonoBehaviour {
 
 		actions[index].Receiver = targetedObject;
 		return actions[index];
+	}
+
+	/// <summary>
+	/// Gets the action count.
+	/// </summary>
+	/// <returns>The action count.</returns>
+	public int GetActionCount() {
+		return actions.Count;
+	}
+
+	/// <summary>
+	/// Gets the launch position for an action.
+	/// </summary>
+	/// <returns>The launch position.</returns>
+	public GameObject GetLaunchPosition() {
+		return launchPoint;
 	}
 }

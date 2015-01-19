@@ -7,10 +7,37 @@ using System.Collections;
 public class SelectMoveState : InGameState {
 	public float turnDuration = 5.0f;
 	float timeElapsed = 0.0f;
+	GameObject gameCamera;
+
+	void Awake() {
+		gameCamera = GameObject.FindGameObjectWithTag("MainCamera");
+		if (!gameCamera) {
+			Debug.LogError("Unable to find camera with tag MainCamera");
+		}
+	}
 
 	public override void OnEnter (GameManager gameManager) {
 		gameManager.GetGUIManager().ShowActions();
 		timeElapsed = turnDuration;
+		gameCamera.GetComponent<CameraMoves>().WatchPosition(gameManager.GetPlayer().transform.position, 2.0f, 15.0f);
+
+		// Pick random actions for the non-player combatants.
+		GameObject[] actors = GameObject.FindGameObjectsWithTag("Combatant");
+		foreach (GameObject actor in actors) {
+			CombatantActions combatant = actor.GetComponent<CombatantActions>();
+
+			// Make sure the combatant doesn't target itself.
+			int randActor = Random.Range(0, actors.Length);
+			while (actors[randActor] == actor) {
+				randActor = Random.Range(0, actors.Length);
+			}
+			combatant.SetTarget(actors[randActor]);
+
+			// Pick the action.
+			int randAction = Random.Range(0, combatant.GetActionCount());
+			CombatantAction action = combatant.GetAction(randAction);
+			gameManager.QueueAction(action);
+		}
 	}
 
 	public override void OnExit(GameManager gameManager) {
@@ -20,7 +47,7 @@ public class SelectMoveState : InGameState {
 	public override void OnUpdate(GameManager gameManager) {
 		timeElapsed -= Time.deltaTime;
 		if (timeElapsed <= 0.0f) {
-			gameManager.SetState(new ExecuteMoveState());
+			gameManager.SetState(gameManager.CreateStateByName("ExecuteMoveState"));
 		}
 	}
 }

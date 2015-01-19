@@ -40,7 +40,7 @@ public class GUIManager : MonoBehaviour {
 			if (activeObject && LayerMask.NameToLayer("UI") == activeObject.layer) {
 				// User clicked a GUI component. Do nothing.
 			}
-			else if (ProcessClick (out clickHit, LayerMask.NameToLayer("Actor"))) {
+			else if (ProcessClick (out clickHit, LayerMask.NameToLayer("Combatant"))) {
 				gameManager.OnCombatantSelect(clickHit.collider.gameObject);
 			}
 			else if (gameManager.GetComponent<GameManager>().IsPlayerTargetingGameObject()) {
@@ -74,6 +74,26 @@ public class GUIManager : MonoBehaviour {
 	/// </summary>
 	public void HideActions() {
 		actionsPanel.SetActive(false);
+	}
+
+	/// <summary>
+	/// Enable clicking on the action-buttons 
+	/// </summary>
+	public void EnableActionButtons() {
+		Button[] buttons = actionsPanel.GetComponentsInChildren<Button>();
+		foreach (Button button in buttons) {
+			button.interactable = true;
+		}
+	}
+
+	/// <summary>
+	/// Disable clicking on the action-buttons 
+	/// </summary>
+	public void DisableActionButtons() {
+		Button[] buttons = actionsPanel.GetComponentsInChildren<Button>();
+		foreach (Button button in buttons) {
+			button.interactable = false;
+		}
 	}
 
 	/// <summary>
@@ -122,7 +142,7 @@ public class GUIManager : MonoBehaviour {
 	public void RefreshActionButtons() {
 		Button[] buttons = actionsPanel.GetComponentsInChildren<Button>();
 		for (int i = 0; i < buttons.Length; ++i) {
-			buttons[i].GetComponentInChildren<Text>().text = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(i).Name;
+			buttons[i].GetComponentInChildren<Text>().text = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(i).name;
 		}
 	}
 }

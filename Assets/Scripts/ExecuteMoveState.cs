@@ -6,21 +6,56 @@ using System.Collections.Generic;
 /// State that executes all the moves.
 /// </summary>
 public class ExecuteMoveState : InGameState {
+	CameraMoves gameCamera;
+	bool isProcessingQueue = false;
+	GameManager gameManager;
+	CombatantAction currentAction;
 
-	float countdown = 5.0f;	// Must remain for 5 seconds in this state to simulate time required to show attacks.
+	void Start() {
+		GameObject gameCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
+		if (!gameCameraObj || !gameCameraObj.GetComponent<CameraMoves>()) {
+			Debug.LogError("Unable to intiailize ExecuteMoveState: Can't find camera with tag MainCamera, or camera doesn't have CameraMoves action attached.");
+		}
+		gameCamera = gameCameraObj.GetComponent<CameraMoves>();
+		isProcessingQueue = false;
+		currentAction = null;
+	}
+
+	public override void OnEnter (GameManager gameManager) {
+		gameManager.GetGUIManager().HideActions();
+		isProcessingQueue = false;
+		currentAction = null;
+	}
 
 	public override void OnUpdate(GameManager gameManager) {
-		// Process the queued items
+		this.gameManager = gameManager;
+		if (!isProcessingQueue) {
+			ProcessNextQueueItem();
+			isProcessingQueue = true;
+		}
+	}
+
+	void ProcessNextQueueItem() {
 		Queue<CombatantAction> queue = gameManager.GetQueuedActions();
-		CombatantAction action;
-		while (queue.Count > 0) {
-			action = queue.Dequeue();
-			action.DoAction();
+		if (queue.Count > 0) {
+			currentAction = queue.Dequeue();
+
+			if (currentAction.Sender) {
+				gameCamera.WatchPosition(currentAction.Sender.transform.position, 2.0f, 15.0f, gameObject, "ExecuteAction");
+			}
 		}
-		
-		countdown -= Time.deltaTime;
-		if (countdown < 0) {
-			gameManager.SetState(new SelectMoveState());
+		else {
+			gameManager.SetState(gameManager.CreateStateByName("SelectMoveState"));
 		}
+	}
+
+	/// <summary>
+	/// Executes the action.
+	/// </summary>
+	void ExecuteAction() {
+		if (currentAction != null && currentAction.Sender != null && currentAction.Receiver != null) {
+			currentAction.DoAction();
+		}
+		ProcessNextQueueItem();
 	}
 }

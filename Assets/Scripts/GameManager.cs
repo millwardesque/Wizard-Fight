@@ -9,9 +9,17 @@ public class GameManager : MonoBehaviour {
 	GameObject targetingIndicator;
 	bool isCurrentlyTargeting = false;
 	public GameObject targetingIndicatorPrefab;
+	public InGameState[] stateTypes;
 
 	Queue<CombatantAction> queuedActions;
 	InGameState state;
+
+	/// <summary>
+	/// Restarts the scene.
+	/// </summary>
+	public void RestartScene() {
+		Application.LoadLevel(Application.loadedLevel);
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -37,16 +45,18 @@ public class GameManager : MonoBehaviour {
 		queuedActions = new Queue<CombatantAction>();
 
 		// Disable the targeting indicator.
-		SetPlayerTarget(null);
-
-		// Set the initial state.
-		SetState(new SelectMoveState());
+		OnNothingSelected();
+		state = null;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (state != null) {
 			state.OnUpdate(this);
+		}
+		else {
+			// Set the initial state.
+			SetState(CreateStateByName("SelectMoveState"));
 		}
 	}
 
@@ -56,15 +66,30 @@ public class GameManager : MonoBehaviour {
 	/// <param name="newState">New state.</param>
 	public void SetState(InGameState newState) {
 		if (state != null) {
-			Debug.Log ("Leaving state '" + state + "'");
 			state.OnExit(this);
+			GameObject.Destroy(state.gameObject);
 		}
 
 		if (newState != null) {
 			state = newState;
-			Debug.Log ("Entering state '" + state + "'");
 			state.OnEnter (this);
 		}
+	}
+
+	/// <summary>
+	/// Creates a state by by name.
+	/// </summary>
+	/// <returns>The state object</returns>
+	/// <param name="name">Name of the state</param>
+	public InGameState CreateStateByName(string name) {
+		foreach (InGameState state in stateTypes) {
+			if (state.name == name) {
+				InGameState newState = (InGameState)GameObject.Instantiate(state);
+				return newState;
+			}
+		}
+
+		throw new UnityException("Couldn't find state named '" + name + "'");
 	}
 
 	/// <summary>
@@ -108,20 +133,28 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the player's current target. Doesn't check whether a target is currently set, use IsPlayerTargetingGameObject first for that.
+	/// </summary>
+	/// <returns>The player target.</returns>
+	public GameObject GetPlayerTarget() {
+		return player.GetComponent<CombatantActions>().GetTarget();
+	}
+
+	/// <summary>
 	/// Called when a user selects a combatant.
 	/// </summary>
 	/// <param name="selected">Selected.</param>
 	public void OnCombatantSelect(GameObject selected) {
 		SetPlayerTarget(selected);
+		guiManager.EnableActionButtons();
 	}
 
 	/// <summary>
 	/// Called when the user attempts to select something (i.e. mouse click or tap) but no relevent object was chosen.
 	/// </summary>
 	public void OnNothingSelected() {
-		if (isCurrentlyTargeting) {
-			SetPlayerTarget (null);
-		}
+		SetPlayerTarget (null);
+		guiManager.DisableActionButtons();
 	}
 
 	/// <summary>
@@ -131,12 +164,11 @@ public class GameManager : MonoBehaviour {
 		GameObject combatant = (GameObject)combatantObject;
 
 		if (combatant != player && player.GetComponent<CombatantActions>().GetTarget() == combatant) {
-			SetPlayerTarget(null);
+			OnNothingSelected();
 		}
 
 		// Final cleanup.
 		Debug.Log ("Combatant " + combatant.name + " has died.");
-		Destroy(combatant);
 	}
 
 	/// <summary>

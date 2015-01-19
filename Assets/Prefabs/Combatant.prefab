@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &175550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 475550}
+  m_Layer: 0
+  m_Name: Magic Launch Point
+  m_TagString: Magic Launch Point
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &179310
 GameObject:
   m_ObjectHideFlags: 0
@@ -16,11 +31,23 @@ GameObject:
   - 114: {fileID: 11435810}
   m_Layer: 8
   m_Name: Combatant
-  m_TagString: Untagged
+  m_TagString: Combatant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &475550
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175550}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .50999999, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 479310}
+  m_RootOrder: 0
 --- !u!4 &479310
 Transform:
   m_ObjectHideFlags: 1
@@ -28,9 +55,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179310}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.6400001, y: 1, z: 2.06999993}
+  m_LocalPosition: {x: 42.3100014, y: 3.59299994, z: 10.1199999}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 475550}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!23 &2379310
@@ -71,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f047a6dc902194d8c9822a9a05f81532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  launchPoint: {fileID: 175550}
 --- !u!114 &11479308
 MonoBehaviour:
   m_ObjectHideFlags: 1

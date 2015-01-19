@@ -6,13 +6,27 @@ using System.Collections;
 /// </summary>
 public class FixedDamageAction : CombatantAction {
 	public int DamageDealt { get; set; }
+	public GameObject actionFX;
+
+	void Start() {
+		if (actionFX == null) {
+			Debug.LogWarning("FixedDamagerAction '" + name + "' has no action FX attached.");
+		}
+	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="FixedDamageAction"/> class.
+	/// Initialize the specified sender, receiver and damageDealt.  Shortcut method rather than setting the properties individually.
 	/// </summary>
-	/// <param name="name">Name.</param>
-	public FixedDamageAction(string name, GameObject sender, int damage) : base(name, sender) {
-		DamageDealt = damage;
+	/// <param name="sender">Sender.</param>
+	/// <param name="receiver">Receiver.</param>
+	/// <param name="damageDealt">Damage dealt.</param>
+	public FixedDamageAction Initialize(string name, GameObject sender, GameObject receiver, int damageDealt) {
+		this.name = name;
+		this.Sender = sender;
+		this.Receiver = receiver;
+		this.DamageDealt = damageDealt;
+
+		return this;
 	}
 
 	/// <summary>
@@ -21,10 +35,20 @@ public class FixedDamageAction : CombatantAction {
 	public override void DoAction ()
 	{
 		if (Sender != null && Receiver != null && Receiver.GetComponent<Health>()) {
+			GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
+
+			// Create the special FX.
+			GameObject newFX = (GameObject)GameObject.Instantiate(actionFX);
+			newFX.transform.parent = launchPosition.transform;
+			newFX.transform.localPosition = Vector3.zero;
+			newFX.transform.localRotation = Quaternion.identity;
+
+			// Shoot FX at Receiver.
+			newFX.GetComponent<ActionFX>().Fire(Receiver);
 			Receiver.GetComponent<Health>().AddHealth(-DamageDealt);
 		}
 		else {
-			Debug.Log ("Unable to do action " + Name + ": Either the sender/receiver are null, or the receiver doesn't have a Health component.");
+			Debug.Log ("Unable to do action " + name + ": Either the sender/receiver are null, or the receiver doesn't have a Health component.");
 		}
 		base.DoAction ();
 	}
