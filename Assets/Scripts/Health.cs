@@ -25,6 +25,12 @@ public class Health : MonoBehaviour {
 		isAlive = true;
 	}
 
+	void Update() {
+		if (!isAlive) {
+			StartCoroutine("DyingFade");
+		}
+	}
+
 	void LateUpdate() {
 		if (healthBar) {
 			if (renderer.isVisible) {
@@ -58,5 +64,20 @@ public class Health : MonoBehaviour {
 				isAlive = false;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Basic animation for combatant death.
+	/// </summary>
+	/// <returns>The fade.</returns>
+	IEnumerator DyingFade() {
+		for (float f = 1.0f; f >= 0; f -= 0.02f) {
+			Color c = renderer.material.color;
+			c.a = f;
+			renderer.material.color = c;
+			yield return null;
+		}
+
+		GameObject.Destroy (gameObject);
 	}
 }

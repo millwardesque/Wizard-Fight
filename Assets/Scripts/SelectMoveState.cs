@@ -31,18 +31,27 @@ public class SelectMoveState : InGameState {
 		GameObject[] actors = GameObject.FindGameObjectsWithTag("Combatant");
 		foreach (GameObject actor in actors) {
 			CombatantActions combatant = actor.GetComponent<CombatantActions>();
+			if (combatant == null) {
+				continue; 
+			}
 
 			// Make sure the combatant doesn't target itself.
-			int randActor = Random.Range(0, actors.Length);
-			while (actors[randActor] == actor) {
-				randActor = Random.Range(0, actors.Length);
+			GameObject target = null;
+			for (int i = 0; i < actors.Length; i++) {
+				if (actors[i] != null && actors[i] != actor) {
+					target = actors[i];
+					break;
+				}
 			}
-			combatant.SetTarget(actors[randActor]);
 
-			// Pick the action.
-			int randAction = Random.Range(0, combatant.GetActionCount());
-			CombatantAction action = combatant.GetAction(randAction);
-			gameManager.QueueAction(action);
+			if (target != null) {
+				combatant.SetTarget(target);
+
+				// Pick the action.
+				int randAction = Random.Range(0, combatant.GetActionCount());
+				CombatantAction action = combatant.GetAction(randAction);
+				gameManager.QueueAction(action);
+			}
 		}
 	}
 
