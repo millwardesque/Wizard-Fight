@@ -19,6 +19,9 @@ public class SelectMoveState : InGameState {
 
 	public override void OnEnter (GameManager gameManager) {
 		gameManager.GetGUIManager().ShowActions();
+		gameManager.GetGUIManager().ShowMoveSelectCountdown();
+		gameManager.GetGUIManager().SetMoveSelectCountdownMinMax(0, turnDuration);
+		gameManager.GetGUIManager().SetMoveSelectCountdownValue(turnDuration);
 		timeElapsed = turnDuration;
 
 		// Move the camera back into place.
@@ -45,10 +48,12 @@ public class SelectMoveState : InGameState {
 
 	public override void OnExit(GameManager gameManager) {
 		gameManager.GetGUIManager().HideActions();
+		gameManager.GetGUIManager().HideMoveSelectCountdown();
 	}
 
 	public override void OnUpdate(GameManager gameManager) {
 		timeElapsed -= Time.deltaTime;
+		gameManager.GetGUIManager().SetMoveSelectCountdownValue(timeElapsed);
 		if (timeElapsed <= 0.0f) {
 			gameManager.SetState(gameManager.CreateStateByName("ExecuteMoveState"));
 		}

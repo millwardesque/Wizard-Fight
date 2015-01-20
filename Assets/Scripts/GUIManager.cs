@@ -5,6 +5,7 @@ using System.Collections;
 
 public class GUIManager : MonoBehaviour {
 	public GameObject healthBarPrefab;
+	public Slider moveSelectCountdown;
 	GameManager gameManager;
 	GameObject actionsPanel;
 	EventSystem eventSystem;
@@ -17,6 +18,7 @@ public class GUIManager : MonoBehaviour {
 		if (!actionsPanel) {
 			Debug.LogError("Unable to initialize GUI Manager: No Action Panel is tagged with the 'UI Actions Panel' tag.");
 		}
+
 		// Find and store the Game Manager.
 		GameObject gameManagerObject = GameObject.FindGameObjectWithTag("Game Manager");
 		if (gameManagerObject && gameManagerObject.GetComponent<GameManager>()) {
@@ -145,5 +147,37 @@ public class GUIManager : MonoBehaviour {
 		for (int i = 0; i < buttons.Length; ++i) {
 			buttons[i].GetComponentInChildren<Text>().text = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(i).name;
 		}
+	}
+
+	/// <summary>
+	/// Shows the move select countdown.
+	/// </summary>
+	public void ShowMoveSelectCountdown() {
+		moveSelectCountdown.gameObject.SetActive(true);
+	}
+
+	/// <summary>
+	/// Hides the move select countdown.
+	/// </summary>
+	public void HideMoveSelectCountdown() {
+		moveSelectCountdown.gameObject.SetActive(false);
+	}
+
+	/// <summary>
+	/// Sets the move select countdown minimum and maximum.
+	/// </summary>
+	/// <param name="min">Minimum.</param>
+	/// <param name="max">Max.</param>
+	public void SetMoveSelectCountdownMinMax(float min, float max) {
+		moveSelectCountdown.minValue = min;
+		moveSelectCountdown.maxValue = max;
+	}
+
+	/// <summary>
+	/// Sets the move select countdown value.
+	/// </summary>
+	/// <param name="value">Value.</param>
+	public void SetMoveSelectCountdownValue(float value) {
+		moveSelectCountdown.value = value;
 	}
 }
