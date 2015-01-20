@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Health : MonoBehaviour {
 	public int currentHealth;
+	private Slider healthBar;
 	private GameObject gameManager;
 	private bool isAlive = true;
 
@@ -13,7 +15,26 @@ public class Health : MonoBehaviour {
 			Debug.LogError("Unable to initialize Health in " + gameObject.name + ": No game manager is tagged, or game manager is missing GameManager component.");
 		}
 
+
+		GameObject healthBarObject = (GameObject)GameObject.Instantiate (GameObject.FindGameObjectWithTag("GUI Manager").GetComponent<GUIManager>().healthBarPrefab);
+		healthBar = healthBarObject.GetComponent<Slider>();
+		healthBar.maxValue = (float)currentHealth;
+		healthBar.value = (float)currentHealth;
+		healthBar.transform.SetParent(GameObject.Find("Canvas").transform, false);
+
 		isAlive = true;
+	}
+
+	void LateUpdate() {
+		if (healthBar) {
+			healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position) + new Vector3(0, 30.0f, 0);
+		}
+	}
+
+	void OnDestroy() {
+		if (healthBar) {
+			GameObject.Destroy (healthBar.gameObject);
+		}
 	}
 
 	/// <summary>
@@ -23,6 +44,7 @@ public class Health : MonoBehaviour {
 	public void AddHealth(int healthChange) {
 		if (isAlive) {
 			currentHealth += healthChange;
+			healthBar.value = (float)currentHealth;
 
 			if (currentHealth <= 0) {
 				gameManager.SendMessage("OnCombatantDied", gameObject);

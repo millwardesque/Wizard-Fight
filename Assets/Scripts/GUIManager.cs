@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class GUIManager : MonoBehaviour {
+	public GameObject healthBarPrefab;
 	GameManager gameManager;
 	GameObject actionsPanel;
 	EventSystem eventSystem;
