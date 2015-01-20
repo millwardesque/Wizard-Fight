@@ -10,6 +10,23 @@ public class CameraMoves : MonoBehaviour {
 	}
 	
 	/// <summary>
+	/// Moves the camera and looks at an object
+	/// </summary>
+	/// <param name="position">Position.</param>
+	/// <param name="lookAt">Look at.</param>
+	/// <param name="duration">Duration.</param>
+	/// <param name="onCompleteTarget">On complete target.</param>
+	/// <param name="onCompleteAction">On complete action.</param>
+	public void MoveAndLook(Vector3 position, Vector3 lookAt, float duration, GameObject onCompleteTarget = null, string onCompleteAction = "") {
+		if (onCompleteAction != "" && onCompleteTarget != null) {
+			iTween.MoveTo(gameCamera, iTween.Hash("position", position, "looktarget", lookAt, "time", duration, "onComplete", onCompleteAction, "onCompleteTarget", onCompleteTarget));
+		}
+		else {
+			iTween.MoveTo(gameCamera, iTween.Hash("position", position, "looktarget", lookAt, "time", duration));
+		}
+	}
+
+	/// <summary>
 	/// Moves the camera near an object and looks at that object.
 	/// </summary>
 	/// <param name="position">Position.</param>

@@ -6,9 +6,10 @@ using System.Collections;
 /// </summary>
 public class SelectMoveState : InGameState {
 	public float turnDuration = 5.0f;
+	public Vector3 startCameraPosition;
 	float timeElapsed = 0.0f;
 	GameObject gameCamera;
-
+	
 	void Awake() {
 		gameCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		if (!gameCamera) {
@@ -19,7 +20,9 @@ public class SelectMoveState : InGameState {
 	public override void OnEnter (GameManager gameManager) {
 		gameManager.GetGUIManager().ShowActions();
 		timeElapsed = turnDuration;
-		gameCamera.GetComponent<CameraMoves>().WatchPosition(gameManager.GetPlayer().transform.position, 2.0f, 15.0f);
+
+		// Move the camera back into place.
+		gameCamera.GetComponent<CameraMoves>().MoveAndLook(startCameraPosition, gameManager.GetPlayer().transform.position, 2.0f);
 
 		// Pick random actions for the non-player combatants.
 		GameObject[] actors = GameObject.FindGameObjectsWithTag("Combatant");
