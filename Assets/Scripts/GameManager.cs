@@ -191,4 +191,25 @@ public class GameManager : MonoBehaviour {
 		
 		player.GetComponent<CombatantActions>().SetTarget(target);
 	}
+
+	/// <summary>
+	/// Gets the active combatants.
+	/// </summary>
+	/// <returns>The active combatants.</returns>
+	public List<GameObject> GetActiveCombatants() {
+		List<GameObject> combatants = new List<GameObject>();
+
+		GameObject[] actors = GameObject.FindGameObjectsWithTag("Combatant");
+		foreach (GameObject actor in actors) {
+			if (actor != null && actor.GetComponent<Health>().IsAlive()) {
+				combatants.Add(actor);
+			}
+		}
+
+		if (GetPlayer() != null) {
+			combatants.Add (GetPlayer());
+		}
+
+		return combatants;
+	}
 }

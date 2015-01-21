@@ -50,6 +50,10 @@ public class Health : MonoBehaviour {
 		}
 	}
 
+	public bool IsAlive() {
+		return isAlive;
+	}
+
 	/// <summary>
 	/// Adds health to the combatant. Negative values are permitted.
 	/// </summary>

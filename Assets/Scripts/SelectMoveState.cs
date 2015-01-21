@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Game state for when the the combatants can choose their moves.
@@ -28,24 +29,31 @@ public class SelectMoveState : InGameState {
 		gameCamera.GetComponent<CameraMoves>().MoveAndLook(startCameraPosition, gameManager.GetPlayer().transform.position, 2.0f);
 
 		// Pick random actions for the non-player combatants.
-		GameObject[] actors = GameObject.FindGameObjectsWithTag("Combatant");
-		foreach (GameObject actor in actors) {
-			CombatantActions combatant = actor.GetComponent<CombatantActions>();
-			if (combatant == null) {
-				continue; 
-			}
-
-			// Make sure the combatant doesn't target itself.
-			GameObject target = null;
-			for (int i = 0; i < actors.Length; i++) {
-				if (actors[i] != null && actors[i] != actor) {
-					target = actors[i];
-					break;
+		List<GameObject> actors = gameManager.GetActiveCombatants();
+		Debug.Log (actors);
+		if (actors.Count > 1) {
+			foreach (GameObject actor in actors) {
+				// We dont' need to pick an action for the player automatically.
+				if (actor.CompareTag("Player")) {
+					continue;
 				}
-			}
+				CombatantActions combatant = actor.GetComponent<CombatantActions>();
 
-			if (target != null) {
+				// Choose a target.
+
+				// Make sure the combatant doesn't target itself.
+				List<int> possibleTargets = new List<int>();
+				for (int i = 0; i < actors.Count; i++) {
+					if (actors[i] != actor) {
+						possibleTargets.Add(i);
+					}
+				}
+
+				int targetIndex = Random.Range(0, possibleTargets.Count);
+				GameObject target = actors[possibleTargets[targetIndex]];
 				combatant.SetTarget(target);
+
+				Debug.Log (actor.name + " chose " + target.name);
 
 				// Pick the action.
 				int randAction = Random.Range(0, combatant.GetActionCount());
