@@ -8,7 +8,7 @@ public class CameraMoves : MonoBehaviour {
 	void Start () {
 		gameCamera = GameObject.FindGameObjectWithTag("MainCamera");
 	}
-	
+
 	/// <summary>
 	/// Moves the camera and looks at an object
 	/// </summary>

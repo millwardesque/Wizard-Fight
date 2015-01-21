@@ -40,8 +40,12 @@ public class ExecuteMoveState : InGameState {
 		if (queue.Count > 0) {
 			currentAction = queue.Dequeue();
 
-			if (currentAction.Sender) {
-				gameCamera.WatchPosition(currentAction.Sender.transform.position, 2.0f, 15.0f, gameObject, "ExecuteAction");
+			if (currentAction.Sender != null && currentAction.Receiver != null) {
+				Vector3 senderPosition = currentAction.Sender.transform.position;
+				Vector3 receiverPosition = currentAction.Receiver.transform.position;
+				Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
+				cameraPosition.y = gameCamera.transform.position.y;
+				gameCamera.MoveAndLook(cameraPosition, receiverPosition, 3.0f, gameObject, "ExecuteAction");
 			}
 		}
 		else {
