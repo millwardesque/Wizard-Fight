@@ -41,11 +41,16 @@ public class ExecuteMoveState : InGameState {
 			currentAction = queue.Dequeue();
 
 			if (currentAction.Sender != null && currentAction.Receiver != null) {
+
+				// Orient the camera appropriately
 				Vector3 senderPosition = currentAction.Sender.transform.position;
 				Vector3 receiverPosition = currentAction.Receiver.transform.position;
 				Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
 				cameraPosition.y = gameCamera.transform.position.y;
-				gameCamera.MoveAndLook(cameraPosition, receiverPosition, 3.0f, gameObject, "ExecuteAction");
+				gameCamera.MoveAndLook(cameraPosition, receiverPosition, 3.0f, gameObject, "ExecuteActionWrapper"); // Once the camera is oriented, execute the action.
+			}
+			else {
+				Debug.LogError(string.Format ("Found an action with no sender or receiver: Sender => {0} Receiver => {1}", currentAction.Sender, currentAction.Receiver));
 			}
 		}
 		else {
@@ -54,12 +59,22 @@ public class ExecuteMoveState : InGameState {
 	}
 
 	/// <summary>
+	/// Wrapper around the ExecuteAction function because the iTween callback method is just a string and won't run StartCoroutine.
+	/// </summary>
+	void ExecuteActionWrapper() {
+		StartCoroutine (ExecuteAction());
+	}
+
+	/// <summary>
 	/// Executes the action.
 	/// </summary>
-	void ExecuteAction() {
+	/// <returns>The action.</returns>
+	IEnumerator ExecuteAction() {
 		if (currentAction != null && currentAction.Sender != null && currentAction.Receiver != null) {
-			currentAction.DoAction();
+			yield return StartCoroutine(currentAction.DoAction());
 		}
+
+		// After the action animation has completed, move to the next action in the list.
 		ProcessNextQueueItem();
 	}
 }

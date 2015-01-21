@@ -9,14 +9,12 @@ public class ActionFX : MonoBehaviour {
 	/// <summary>
 	/// Launch the FX at the recipient.
 	/// </summary>
-	public void Fire(GameObject receiver) {
-		if (hasFired) {
-			return;
-		}
-
+	public IEnumerator Fire(GameObject receiver) {
 		this.receiver = receiver;
 		this.hasFired = true;
+		Debug.Log ("Firing!");
 		iTween.MoveTo(gameObject, iTween.Hash("position", this.receiver.transform, "orienttopath", true, "time", duration));
+		yield return new WaitForSeconds(duration);
 	}
 
 	/// <summary>

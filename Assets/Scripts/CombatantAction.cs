@@ -11,8 +11,8 @@ public class CombatantAction : MonoBehaviour {
 	/// <summary>
 	/// Virtual method for performing the method.
 	/// </summary>
-	public virtual void DoAction() {
-	
+	public virtual IEnumerator DoAction() {
+		yield break;
 	}
 
 	public override string ToString () {

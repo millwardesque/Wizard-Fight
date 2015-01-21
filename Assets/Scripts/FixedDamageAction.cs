@@ -32,8 +32,7 @@ public class FixedDamageAction : CombatantAction {
 	/// <summary>
 	/// Virtual method for performing the action.
 	/// </summary>
-	public override void DoAction ()
-	{
+	public override IEnumerator DoAction () {
 		if (Sender != null && Receiver != null && Receiver.GetComponent<Health>()) {
 			GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
 
@@ -43,13 +42,13 @@ public class FixedDamageAction : CombatantAction {
 			newFX.transform.localPosition = Vector3.zero;
 			newFX.transform.localRotation = Quaternion.identity;
 
-			// Shoot FX at Receiver.
-			newFX.GetComponent<ActionFX>().Fire(Receiver);
+			// Shoot FX at Receiver and wait for it finish.
+			yield return StartCoroutine(newFX.GetComponent<ActionFX>().Fire(Receiver));
 			Receiver.GetComponent<Health>().AddHealth(-DamageDealt);
 		}
 		else {
 			Debug.Log ("Unable to do action " + name + ": Either the sender/receiver are null, or the receiver doesn't have a Health component.");
 		}
-		base.DoAction ();
+		yield return base.DoAction ();
 	}
 }

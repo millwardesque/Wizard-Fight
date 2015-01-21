@@ -30,7 +30,6 @@ public class SelectMoveState : InGameState {
 
 		// Pick random actions for the non-player combatants.
 		List<GameObject> actors = gameManager.GetActiveCombatants();
-		Debug.Log (actors);
 		if (actors.Count > 1) {
 			foreach (GameObject actor in actors) {
 				// We dont' need to pick an action for the player automatically.
@@ -52,8 +51,6 @@ public class SelectMoveState : InGameState {
 				int targetIndex = Random.Range(0, possibleTargets.Count);
 				GameObject target = actors[possibleTargets[targetIndex]];
 				combatant.SetTarget(target);
-
-				Debug.Log (actor.name + " chose " + target.name);
 
 				// Pick the action.
 				int randAction = Random.Range(0, combatant.GetActionCount());
