@@ -21,6 +21,7 @@ public class Health : MonoBehaviour {
 		healthBar.maxValue = (float)currentHealth;
 		healthBar.value = (float)currentHealth;
 		healthBar.transform.SetParent(GameObject.Find("Canvas").transform, false);
+		healthBarObject.transform.SetAsFirstSibling();
 
 		isAlive = true;
 	}

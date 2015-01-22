@@ -12,7 +12,6 @@ public class ActionFX : MonoBehaviour {
 	public IEnumerator Fire(GameObject receiver) {
 		this.receiver = receiver;
 		this.hasFired = true;
-		Debug.Log ("Firing!");
 		iTween.MoveTo(gameObject, iTween.Hash("position", this.receiver.transform, "orienttopath", true, "time", duration));
 		yield return new WaitForSeconds(duration);
 	}
