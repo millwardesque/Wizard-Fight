@@ -167,6 +167,10 @@ public class GameManager : MonoBehaviour {
 			OnNothingSelected();
 		}
 
+		if (combatant == GetPlayer()) {
+			SetState(CreateStateByName("GameOverState"));
+		}
+
 		// Final cleanup.
 		Debug.Log ("Combatant " + combatant.name + " has died.");
 	}

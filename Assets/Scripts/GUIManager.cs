@@ -6,17 +6,22 @@ using System.Collections;
 public class GUIManager : MonoBehaviour {
 	public GameObject healthBarPrefab;
 	public Slider moveSelectCountdown;
+	public GameObject gameOverPanel;
+	public GameObject actionsPanel;
 	GameManager gameManager;
-	GameObject actionsPanel;
 	EventSystem eventSystem;
 	bool refreshActionButtons = false;	// Flag to indicate whether to refresh the action buttons.
 
 	// Use this for initialization
 	void Start () {
 		// Find and store the Actions panel.
-		actionsPanel = GameObject.FindGameObjectWithTag("UI Actions Panel");
 		if (!actionsPanel) {
-			Debug.LogError("Unable to initialize GUI Manager: No Action Panel is tagged with the 'UI Actions Panel' tag.");
+			Debug.LogError("Unable to initialize GUI Manager: No Action panel is set.");
+		}
+
+		// Make sure the Game Over panel is set.
+		if (!gameOverPanel) {
+			Debug.LogError("Unable to initialize GUI Manager: No Game Over panel is set.");
 		}
 
 		// Find and store the Game Manager.
@@ -179,5 +184,13 @@ public class GUIManager : MonoBehaviour {
 	/// <param name="value">Value.</param>
 	public void SetMoveSelectCountdownValue(float value) {
 		moveSelectCountdown.value = value;
+	}
+
+	public void ShowGameOverPanel() {
+		gameOverPanel.SetActive (true);
+	}
+
+	public void HideGameOverPanel() {
+		gameOverPanel.SetActive(false);
 	}
 }
