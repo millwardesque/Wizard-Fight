@@ -48,8 +48,13 @@ public class GUIManager : MonoBehaviour {
 			if (activeObject && LayerMask.NameToLayer("UI") == activeObject.layer) {
 				// User clicked a GUI component. Do nothing.
 			}
+			else if (ProcessClick (out clickHit, LayerMask.NameToLayer("Touch Collider"))) {
+				GameObject playerTarget = clickHit.collider.transform.parent.gameObject;
+				gameManager.OnCombatantSelect(playerTarget);
+			}
 			else if (ProcessClick (out clickHit, LayerMask.NameToLayer("Combatant"))) {
-				gameManager.OnCombatantSelect(clickHit.collider.gameObject);
+				GameObject playerTarget = clickHit.collider.gameObject;
+				gameManager.OnCombatantSelect(playerTarget);
 			}
 			else if (gameManager.GetComponent<GameManager>().IsPlayerTargetingGameObject()) {
 				gameManager.OnNothingSelected();

@@ -11,6 +11,8 @@ TagManager:
   - In-Game UI
   - Particles
   - 
+  - Actions Manager
+  - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
   Builtin Layer 2: Ignore Raycast
@@ -20,7 +22,7 @@ TagManager:
   Builtin Layer 6: 
   Builtin Layer 7: 
   User Layer 8: Combatant
-  User Layer 9: 
+  User Layer 9: Touch Collider
   User Layer 10: 
   User Layer 11: 
   User Layer 12: 
