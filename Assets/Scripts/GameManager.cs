@@ -145,16 +145,18 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="selected">Selected.</param>
 	public void OnCombatantSelect(GameObject selected) {
-		SetPlayerTarget(selected);
-		guiManager.EnableActionButtons();
+		if (state != null) {
+			state.OnCombatantSelect(this, selected);
+		}
 	}
 
 	/// <summary>
 	/// Called when the user attempts to select something (i.e. mouse click or tap) but no relevent object was chosen.
 	/// </summary>
 	public void OnNothingSelected() {
-		SetPlayerTarget (null);
-		guiManager.DisableActionButtons();
+		if (state != null) {
+			state.OnNothingSelected(this);
+		}
 	}
 
 	/// <summary>

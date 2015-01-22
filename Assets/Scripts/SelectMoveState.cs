@@ -72,4 +72,14 @@ public class SelectMoveState : InGameState {
 			gameManager.SetState(gameManager.CreateStateByName("ExecuteMoveState"));
 		}
 	}
+
+	public override void OnCombatantSelect(GameManager gameManager, GameObject selected) {
+		gameManager.SetPlayerTarget(selected);
+		gameManager.GetGUIManager().EnableActionButtons();
+	}
+
+	public override void OnNothingSelected(GameManager gameManager) {
+		gameManager.SetPlayerTarget (null);
+		gameManager.GetGUIManager().DisableActionButtons();
+	}
 }
