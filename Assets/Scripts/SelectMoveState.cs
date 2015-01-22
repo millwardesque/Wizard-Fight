@@ -28,14 +28,24 @@ public class SelectMoveState : InGameState {
 		// Move the camera back into place.
 		gameCamera.GetComponent<CameraMoves>().MoveAndLook(startCameraPosition, gameManager.GetPlayer().transform.position, 2.0f);
 
+		bool autoSelectPlayerTarget = (gameManager.GetPlayerTarget() == null); // Decided whether auto-select a target if the player hasn't selected any
+		Debug.Log ("AutoSelect: " + (autoSelectPlayerTarget ? "Yes" : "No"));
+
 		// Pick random actions for the non-player combatants.
 		List<GameObject> actors = gameManager.GetActiveCombatants();
 		if (actors.Count > 1) {
 			foreach (GameObject actor in actors) {
-				// We dont' need to pick an action for the player automatically.
+				// We don't need to pick an action for the player automatically.
 				if (actor.CompareTag("Player")) {
 					continue;
 				}
+
+				// Auto-select the first available enemy as the player's target.
+				if (autoSelectPlayerTarget) {
+					gameManager.OnCombatantSelect(actor);
+					autoSelectPlayerTarget = false;
+				}
+				
 				CombatantActions combatant = actor.GetComponent<CombatantActions>();
 
 				// Choose a target.
@@ -74,6 +84,7 @@ public class SelectMoveState : InGameState {
 	}
 
 	public override void OnCombatantSelect(GameManager gameManager, GameObject selected) {
+		Debug.Log ("Player selected: " + selected.name);
 		gameManager.SetPlayerTarget(selected);
 		gameManager.GetGUIManager().EnableActionButtons();
 	}
