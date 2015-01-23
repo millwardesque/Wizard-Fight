@@ -218,4 +218,16 @@ public class GameManager : MonoBehaviour {
 
 		return combatants;
 	}
+
+	public void PauseGame() {
+		GetGUIManager().ShowPausePanel();
+		GetGUIManager().HidePauseButton();
+		Time.timeScale = 0;
+	}
+
+	public void UnpauseGame() {
+		GetGUIManager().HidePausePanel();
+		GetGUIManager().ShowPauseButton();
+		Time.timeScale = 1.0f;
+	}
 }

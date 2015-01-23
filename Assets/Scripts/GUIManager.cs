@@ -7,7 +7,9 @@ public class GUIManager : MonoBehaviour {
 	public GameObject healthBarPrefab;
 	public Slider moveSelectCountdown;
 	public GameObject gameOverPanel;
+	public GameObject pausePanel;
 	public GameObject actionsPanel;
+	public GameObject pauseButton;
 	GameManager gameManager;
 	EventSystem eventSystem;
 	bool refreshActionButtons = false;	// Flag to indicate whether to refresh the action buttons.
@@ -22,6 +24,16 @@ public class GUIManager : MonoBehaviour {
 		// Make sure the Game Over panel is set.
 		if (!gameOverPanel) {
 			Debug.LogError("Unable to initialize GUI Manager: No Game Over panel is set.");
+		}
+
+		// Make sure the Pause panel is set.
+		if (!pausePanel) {
+			Debug.LogError("Unable to initialize GUI Manager: No Pause panel is set.");
+		}
+
+		// Make sure the Pause buttons is set.
+		if (!pauseButton) {
+			Debug.LogError("Unable to initialize GUI Manager: No Pause button is set.");
 		}
 
 		// Find and store the Game Manager.
@@ -197,5 +209,21 @@ public class GUIManager : MonoBehaviour {
 
 	public void HideGameOverPanel() {
 		gameOverPanel.SetActive(false);
+	}
+
+	public void ShowPausePanel() {
+		pausePanel.SetActive (true);
+	}
+	
+	public void HidePausePanel() {
+		pausePanel.SetActive(false);
+	}
+
+	public void ShowPauseButton() {
+		pauseButton.SetActive (true);
+	}
+	
+	public void HidePauseButton() {
+		pauseButton.SetActive(false);
 	}
 }
