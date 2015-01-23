@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameOverState : InGameState {
+public class YouWinState : InGameState {
 
 	public override void OnEnter (GameManager gameManager) {
-		gameManager.GetGUIManager().ShowGameOverPanel();
+		gameManager.GetGUIManager().ShowYouWinPanel();
 		gameManager.GetGUIManager().HidePauseButton();
 	}
 	
 	public override void OnExit(GameManager gameManager) {
-		gameManager.GetGUIManager().HideGameOverPanel();
+		gameManager.GetGUIManager().HideYouWinPanel();
 		gameManager.GetGUIManager().ShowPauseButton();
 	}
 }

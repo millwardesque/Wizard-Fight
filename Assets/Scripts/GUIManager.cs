@@ -10,6 +10,7 @@ public class GUIManager : MonoBehaviour {
 	public GameObject pausePanel;
 	public GameObject actionsPanel;
 	public GameObject pauseButton;
+	public GameObject youWinPanel;
 	GameManager gameManager;
 	EventSystem eventSystem;
 	bool refreshActionButtons = false;	// Flag to indicate whether to refresh the action buttons.
@@ -25,6 +26,12 @@ public class GUIManager : MonoBehaviour {
 		if (!gameOverPanel) {
 			Debug.LogError("Unable to initialize GUI Manager: No Game Over panel is set.");
 		}
+
+		// Make sure the You WIn panel is set.
+		if (!youWinPanel) {
+			Debug.LogError("Unable to initialize GUI Manager: No You Win panel is set.");
+		}
+
 
 		// Make sure the Pause panel is set.
 		if (!pausePanel) {
@@ -201,6 +208,14 @@ public class GUIManager : MonoBehaviour {
 	/// <param name="value">Value.</param>
 	public void SetMoveSelectCountdownValue(float value) {
 		moveSelectCountdown.value = value;
+	}
+	
+	public void ShowYouWinPanel() {
+		youWinPanel.SetActive (true);
+	}
+	
+	public void HideYouWinPanel() {
+		youWinPanel.SetActive(false);
 	}
 
 	public void ShowGameOverPanel() {

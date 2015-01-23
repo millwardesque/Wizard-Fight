@@ -172,6 +172,9 @@ public class GameManager : MonoBehaviour {
 		if (combatant == GetPlayer()) {
 			SetState(CreateStateByName("GameOverState"));
 		}
+		else if (GetActiveCombatants().Count == 1) {
+			SetState(CreateStateByName("YouWinState"));
+		}
 
 		// Final cleanup.
 		Debug.Log ("Combatant " + combatant.name + " has died.");
@@ -182,7 +185,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="target">Target.</param>
 	public void SetPlayerTarget(GameObject target) {
-		if (target) {
+		if (target != null) {
 			targetingIndicator.transform.parent = target.transform;
 			targetingIndicator.transform.localPosition = Vector3.zero;
 			targetingIndicator.transform.localRotation = Quaternion.identity;

@@ -51,7 +51,7 @@ public class ExecuteMoveState : InGameState {
 				gameCamera.MoveAndLook(cameraPosition, receiverPosition, cameraSwingDuration, gameObject, "ExecuteActionWrapper"); // Once the camera is oriented, execute the action.
 			}
 			else {
-				Debug.LogError(string.Format ("Found an action with no sender or receiver: Sender => {0} Receiver => {1}", currentAction.Sender, currentAction.Receiver));
+				ProcessNextQueueItem();
 			}
 		}
 		else {
@@ -77,5 +77,9 @@ public class ExecuteMoveState : InGameState {
 
 		// After the action animation has completed, move to the next action in the list.
 		ProcessNextQueueItem();
+	}
+	
+	public override void OnNothingSelected(GameManager gameManager) {
+		gameManager.SetPlayerTarget(null);
 	}
 }

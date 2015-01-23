@@ -65,8 +65,8 @@ public class Health : MonoBehaviour {
 			healthBar.value = (float)currentHealth;
 
 			if (currentHealth <= 0) {
-				gameManager.SendMessage("OnCombatantDied", gameObject);
 				isAlive = false;
+				gameManager.SendMessage("OnCombatantDied", gameObject);
 			}
 		}
 	}
