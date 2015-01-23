@@ -10,6 +10,7 @@ public class ExecuteMoveState : InGameState {
 	bool isProcessingQueue = false;
 	GameManager gameManager;
 	CombatantAction currentAction;
+	public float cameraSwingDuration = 1.5f;
 
 	void Start() {
 		GameObject gameCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
@@ -47,7 +48,7 @@ public class ExecuteMoveState : InGameState {
 				Vector3 receiverPosition = currentAction.Receiver.transform.position;
 				Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
 				cameraPosition.y = gameCamera.transform.position.y;
-				gameCamera.MoveAndLook(cameraPosition, receiverPosition, 3.0f, gameObject, "ExecuteActionWrapper"); // Once the camera is oriented, execute the action.
+				gameCamera.MoveAndLook(cameraPosition, receiverPosition, cameraSwingDuration, gameObject, "ExecuteActionWrapper"); // Once the camera is oriented, execute the action.
 			}
 			else {
 				Debug.LogError(string.Format ("Found an action with no sender or receiver: Sender => {0} Receiver => {1}", currentAction.Sender, currentAction.Receiver));
