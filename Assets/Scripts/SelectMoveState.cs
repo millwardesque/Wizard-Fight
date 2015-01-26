@@ -10,7 +10,7 @@ public class SelectMoveState : InGameState {
 	public Vector3 startCameraPosition;
 	float timeElapsed = 0.0f;
 	GameObject gameCamera;
-	
+
 	void Awake() {
 		gameCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		if (!gameCamera) {
@@ -29,7 +29,6 @@ public class SelectMoveState : InGameState {
 		gameCamera.GetComponent<CameraMoves>().MoveAndLook(startCameraPosition, gameManager.GetPlayer().transform.position, 2.0f);
 
 		bool autoSelectPlayerTarget = (gameManager.GetPlayerTarget() == null); // Decided whether auto-select a target if the player hasn't selected any
-		Debug.Log ("AutoSelect: " + (autoSelectPlayerTarget ? "Yes" : "No"));
 
 		// Pick random actions for the non-player combatants.
 		List<GameObject> actors = gameManager.GetActiveCombatants();
@@ -68,23 +67,27 @@ public class SelectMoveState : InGameState {
 				gameManager.QueueAction(action);
 			}
 		}
+
+		gameManager.UnsetSelectedAction();
+		gameManager.GetPlayer().GetComponent<CombatantActions>().SelectedAction = null;
 	}
 
 	public override void OnExit(GameManager gameManager) {
 		gameManager.GetGUIManager().HideActions();
 		gameManager.GetGUIManager().HideMoveSelectCountdown();
+		gameManager.UnsetSelectedAction();
 	}
 
 	public override void OnUpdate(GameManager gameManager) {
 		timeElapsed -= Time.deltaTime;
 		gameManager.GetGUIManager().SetMoveSelectCountdownValue(timeElapsed);
 		if (timeElapsed <= 0.0f) {
+			QueueSelectedAction(gameManager);
 			gameManager.SetState(gameManager.CreateStateByName("ExecuteMoveState"));
 		}
 	}
 
 	public override void OnCombatantSelect(GameManager gameManager, GameObject selected) {
-		Debug.Log ("Player selected: " + selected.name);
 		gameManager.SetPlayerTarget(selected);
 		gameManager.GetGUIManager().EnableActionButtons();
 	}
@@ -92,5 +95,14 @@ public class SelectMoveState : InGameState {
 	public override void OnNothingSelected(GameManager gameManager) {
 		gameManager.SetPlayerTarget (null);
 		gameManager.GetGUIManager().DisableActionButtons();
+		gameManager.UnsetSelectedAction();
+	}
+
+	void QueueSelectedAction(GameManager gameManager) {
+		CombatantAction selectedAction = gameManager.GetPlayer().GetComponent<CombatantActions>().SelectedAction;
+		if (selectedAction != null) {
+			gameManager.QueueAction(selectedAction);
+		}
+		gameManager.UnsetSelectedAction();
 	}
 }

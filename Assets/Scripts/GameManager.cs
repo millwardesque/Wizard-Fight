@@ -233,4 +233,17 @@ public class GameManager : MonoBehaviour {
 		GetGUIManager().ShowPauseButton();
 		Time.timeScale = 1.0f;
 	}
+
+	public void UnsetSelectedAction() {
+		GetPlayer().GetComponent<CombatantActions>().SelectedAction = null;
+		guiManager.SetSelectedButton(-1);
+	}
+
+	public void SetSelectedAction(int actionIndex) {
+		if (actionIndex >= 0 && IsPlayerTargetingGameObject()) {
+			CombatantAction action = GetPlayer().GetComponent<CombatantActions>().GetAction(actionIndex);
+			GetPlayer().GetComponent<CombatantActions>().SelectedAction = action;
+			guiManager.SetSelectedButton(actionIndex);
+		}
+	}
 }

@@ -8,6 +8,7 @@ public class CombatantActions : MonoBehaviour {
 	GameObject targetedObject;
 	List<CombatantAction> actions;
 	public GameObject launchPoint;
+	public CombatantAction SelectedAction { get; set; }
 
 	// Use this for initialization
 	void Awake () {

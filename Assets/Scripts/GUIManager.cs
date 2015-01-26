@@ -132,39 +132,38 @@ public class GUIManager : MonoBehaviour {
 	/// Processes a click on the Action 1 button.
 	/// </summary>
 	public void OnAction1Click() {
-		if (gameManager.IsPlayerTargetingGameObject()) {
-			CombatantAction action = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(0);
-			gameManager.QueueAction(action);
-		}
+		gameManager.SetSelectedAction(0);
 	}
 
 	/// <summary>
 	/// Processes a click on the Action 2 button.
 	/// </summary>
 	public void OnAction2Click() {
-		if (gameManager.IsPlayerTargetingGameObject()) {
-			CombatantAction action = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(1);
-			gameManager.QueueAction(action);
-		}
+		gameManager.SetSelectedAction(1);
 	}
 
 	/// <summary>
 	/// Processes a click on the Action 3 button.
 	/// </summary>
 	public void OnAction3Click() {
-		if (gameManager.IsPlayerTargetingGameObject()) {
-			CombatantAction action = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(2);
-			gameManager.QueueAction(action);
-		}
+		gameManager.SetSelectedAction(2);
 	}
 
 	/// <summary>
 	/// Processes a click on the Action 4 button.
 	/// </summary>
 	public void OnAction4Click() {
-		if (gameManager.IsPlayerTargetingGameObject()) {
-			CombatantAction action = gameManager.GetPlayer().GetComponent<CombatantActions>().GetAction(3);
-			gameManager.QueueAction(action);
+		gameManager.SetSelectedAction(3);
+	}
+
+	public void SetSelectedButton(int selectedButtonIndex) {
+		Button[] buttons = actionsPanel.GetComponentsInChildren<Button>();
+		for (int i = 0; i < buttons.Length; ++i) {
+			Color color = new Color(255, 255, 255);
+			if (i == selectedButtonIndex) {
+				color = new Color(255, 0, 0);
+			}
+			buttons[i].GetComponent<Image>().color = color;
 		}
 	}
 
