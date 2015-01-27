@@ -6,18 +6,11 @@ using System.Collections.Generic;
 /// State that executes all the moves.
 /// </summary>
 public class ExecuteMoveState : InGameState {
-	CameraMoves gameCamera;
 	bool isProcessingQueue = false;
 	GameManager gameManager;
 	CombatantAction currentAction;
-	public float cameraSwingDuration = 1.5f;
 
 	void Start() {
-		GameObject gameCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
-		if (!gameCameraObj || !gameCameraObj.GetComponent<CameraMoves>()) {
-			Debug.LogError("Unable to intiailize ExecuteMoveState: Can't find camera with tag MainCamera, or camera doesn't have CameraMoves action attached.");
-		}
-		gameCamera = gameCameraObj.GetComponent<CameraMoves>();
 		isProcessingQueue = false;
 		currentAction = null;
 	}
@@ -42,13 +35,7 @@ public class ExecuteMoveState : InGameState {
 			currentAction = queue.Dequeue();
 
 			if (currentAction.Sender != null && currentAction.Receiver != null) {
-
-				// Orient the camera appropriately
-				Vector3 senderPosition = currentAction.Sender.transform.position;
-				Vector3 receiverPosition = currentAction.Receiver.transform.position;
-				Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
-				cameraPosition.y = gameCamera.transform.position.y;
-				gameCamera.MoveAndLook(cameraPosition, receiverPosition, cameraSwingDuration, gameObject, "ExecuteActionWrapper"); // Once the camera is oriented, execute the action.
+				StartCoroutine(ExecuteAction());
 			}
 			else {
 				ProcessNextQueueItem();
@@ -57,13 +44,6 @@ public class ExecuteMoveState : InGameState {
 		else {
 			gameManager.SetState(gameManager.CreateStateByName("SelectMoveState"));
 		}
-	}
-
-	/// <summary>
-	/// Wrapper around the ExecuteAction function because the iTween callback method is just a string and won't run StartCoroutine.
-	/// </summary>
-	void ExecuteActionWrapper() {
-		StartCoroutine (ExecuteAction());
 	}
 
 	/// <summary>
