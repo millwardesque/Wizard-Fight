@@ -7,6 +7,8 @@ using System.Collections;
 public class FixedDamageAction : CombatantAction {
 	public int DamageDealt { get; set; }
 	public GameObject actionFX;
+	public GameObject precastFX;
+	
 	CameraMoves gameCamera;
 	bool cameraHasMoved;
 
@@ -60,6 +62,26 @@ public class FixedDamageAction : CombatantAction {
 		}
 
 		canGoToNextState = true;
+		yield return null;
+	}
+
+	/// <summary>
+	/// Update method for the prec-cast action state.
+	/// </summary>
+	/// <returns>The update.</returns>
+	protected override IEnumerator PrecastUpdate() {
+		float precastDuration = 3.0f;
+		GameObject precastFXObj = (GameObject)GameObject.Instantiate(precastFX);
+		if (Sender != null && Receiver != null) {
+			precastFXObj.transform.SetParent(Sender.transform, false);
+			yield return new WaitForSeconds(precastDuration);
+		}
+		else {
+			Debug.LogError ("Unable to do pre-cast setup for action FixedDamageAction: Either the sender/receiver are null, or the receiver doesn't have a Health component.");
+		}
+		
+		canGoToNextState = true;
+		GameObject.Destroy(precastFXObj);
 		yield return null;
 	}
 

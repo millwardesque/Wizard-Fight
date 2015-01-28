@@ -40,6 +40,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionFX: {fileID: 168872, guid: 13a2d07ebadfa4d29ba37589990572f1, type: 2}
+  precastFX: {fileID: 197880, guid: e336485b0461b423aaa706ab27bdf843, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
