@@ -34,13 +34,6 @@ public class Health : MonoBehaviour {
 
 	void LateUpdate() {
 		if (healthBar) {
-			if (renderer.isVisible) {
-				healthBar.enabled = true;
-			}
-			else {
-				healthBar.enabled = false;
-			}
-
 			healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position) + new Vector3(0, 30.0f, 0);
 		}
 	}
