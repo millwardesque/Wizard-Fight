@@ -44,6 +44,10 @@ public class CombatantAction : MonoBehaviour {
 		yield return null;
 	}
 
+	public virtual bool CanExecute() {
+		return true;
+	}
+
 	public override string ToString () {
 		string description;
 		if (Sender != null && Receiver != null) {

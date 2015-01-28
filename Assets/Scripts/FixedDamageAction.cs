@@ -10,7 +10,6 @@ public class FixedDamageAction : CombatantAction {
 	public GameObject precastFX;
 	
 	CameraMoves gameCamera;
-	bool cameraHasMoved;
 
 	void Start() {
 		if (actionFX == null) {
@@ -39,27 +38,25 @@ public class FixedDamageAction : CombatantAction {
 		return this;
 	}
 
+	public override bool CanExecute() {
+		return (this.Sender != null && this.Receiver != null && Receiver.GetComponent<Health>() && Receiver.GetComponent<CharacterController>());
+	}
+
 	/// <summary>
 	/// Update method for the pre-cast setup action state.
 	/// </summary>
 	protected override IEnumerator PrecastSetupUpdate() {
 		// Move the camera into position.
-		if (Sender != null && Receiver != null && Receiver.GetComponent<Health>()) {
-			cameraHasMoved = false;
-			Vector3 senderPosition = Sender.transform.position;
-			Vector3 receiverPosition = Receiver.transform.position;
-			Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
-			float cameraSwingDuration = 1.5f;
-			cameraPosition.y = gameCamera.transform.position.y;
+		Vector3 senderPosition = Sender.transform.position;
+		Vector3 receiverPosition = Receiver.transform.position;
+		Vector3 cameraPosition = senderPosition - ((receiverPosition - senderPosition).normalized * 15.0f);
+		float precastSetupDuration = 1.5f;
+		cameraPosition.y = gameCamera.transform.position.y;
 
-			gameCamera.MoveAndLook(cameraPosition, receiverPosition, cameraSwingDuration, gameObject, "PrecastSetupCameraMoveDone"); // Once the camera is oriented, continue on.
-			while (!cameraHasMoved) {
-				yield return null;
-			}
-		}
-		else {
-			Debug.LogError ("Unable to do pre-cast setup for action FixedDamageAction: Either the sender/receiver are null, or the receiver doesn't have a Health component.");
-		}
+		gameCamera.MoveAndLook(cameraPosition, receiverPosition, precastSetupDuration, gameObject); // Once the camera is oriented, continue on.
+		iTween.LookTo (Sender, receiverPosition, precastSetupDuration / 2);
+		iTween.LookTo (Receiver, senderPosition, precastSetupDuration / 2);
+		yield return new WaitForSeconds(precastSetupDuration);
 
 		canGoToNextState = true;
 		yield return null;
@@ -70,48 +67,32 @@ public class FixedDamageAction : CombatantAction {
 	/// </summary>
 	/// <returns>The update.</returns>
 	protected override IEnumerator PrecastUpdate() {
-		float precastDuration = 3.0f;
+		float precastDuration = 1.5f;
 		GameObject precastFXObj = (GameObject)GameObject.Instantiate(precastFX);
-		if (Sender != null && Receiver != null) {
-			precastFXObj.transform.SetParent(Sender.transform, false);
-			yield return new WaitForSeconds(precastDuration);
-		}
-		else {
-			Debug.LogError ("Unable to do pre-cast setup for action FixedDamageAction: Either the sender/receiver are null, or the receiver doesn't have a Health component.");
-		}
-		
+		precastFXObj.transform.SetParent(Sender.transform, false);
+		yield return new WaitForSeconds(precastDuration);
+
 		canGoToNextState = true;
 		GameObject.Destroy(precastFXObj);
 		yield return null;
 	}
-
-	/// <summary>
-	/// Callback for when the precast setup camera movement has finished.
-	/// </summary>
-	void PrecastSetupCameraMoveDone() {
-		cameraHasMoved = true;
-	}
-
+	
 	/// <summary>
 	/// Update method for the Cast action state.
 	/// </summary>
 	protected override IEnumerator CastUpdate() {
-		if (Sender != null && Receiver != null && Receiver.GetComponent<Health>()) {
-			GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
-			
-			// Create the special FX.
-			GameObject newFX = (GameObject)GameObject.Instantiate(actionFX);
-			newFX.transform.parent = launchPosition.transform;
-			newFX.transform.localPosition = Vector3.zero;
-			newFX.transform.localRotation = Quaternion.identity;
-			
-			// Shoot FX at Receiver and wait for it finish.
-			yield return StartCoroutine(newFX.GetComponent<ActionFX>().Fire(Receiver));
-			Receiver.GetComponent<Health>().AddHealth(-DamageDealt);
-		}
-		else {
-			Debug.LogError ("Unable to do action " + name + ": Either the sender/receiver are null, or the receiver doesn't have a Health component.");
-		}
+		GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
+		
+		// Create the special FX.
+		GameObject newFX = (GameObject)GameObject.Instantiate(actionFX);
+		newFX.transform.parent = launchPosition.transform;
+		newFX.transform.localPosition = Vector3.zero;
+		newFX.transform.localRotation = Quaternion.identity;
+		
+		// Shoot FX at Receiver and wait for it finish.
+		yield return StartCoroutine(newFX.GetComponent<ActionFX>().Fire(Receiver, Receiver.GetComponent<CharacterController>().center));
+
+		Receiver.GetComponent<Health>().AddHealth(-DamageDealt);
 		canGoToNextState = true;
 		yield return null;
 	}

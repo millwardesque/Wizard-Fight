@@ -6,6 +6,7 @@ public class Health : MonoBehaviour {
 	public int currentHealth;
 	private Slider healthBar;
 	private GameObject gameManager;
+	public GameObject combatantMesh;
 	private bool isAlive = true;
 
 	// Use this for initialization
@@ -70,9 +71,9 @@ public class Health : MonoBehaviour {
 	/// <returns>The fade.</returns>
 	IEnumerator DyingFade() {
 		for (float f = 1.0f; f >= 0; f -= 0.02f) {
-			Color c = renderer.material.color;
+			Color c = combatantMesh.renderer.material.color;
 			c.a = f;
-			renderer.material.color = c;
+			combatantMesh.renderer.material.color = c;
 			yield return null;
 		}
 

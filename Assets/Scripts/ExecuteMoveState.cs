@@ -34,7 +34,7 @@ public class ExecuteMoveState : InGameState {
 		if (queue.Count > 0) {
 			currentAction = queue.Dequeue();
 
-			if (currentAction.Sender != null && currentAction.Receiver != null) {
+			if (currentAction != null && currentAction.CanExecute()) {
 				StartCoroutine(ExecuteAction());
 			}
 			else {
@@ -51,9 +51,7 @@ public class ExecuteMoveState : InGameState {
 	/// </summary>
 	/// <returns>The action.</returns>
 	IEnumerator ExecuteAction() {
-		if (currentAction != null && currentAction.Sender != null && currentAction.Receiver != null) {
-			yield return StartCoroutine(currentAction.DoAction());
-		}
+		yield return StartCoroutine(currentAction.DoAction());
 
 		// After the action animation has completed, move to the next action in the list.
 		ProcessNextQueueItem();

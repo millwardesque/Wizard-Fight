@@ -186,9 +186,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="target">Target.</param>
 	public void SetPlayerTarget(GameObject target) {
 		if (target != null) {
-			targetingIndicator.transform.parent = target.transform;
-			targetingIndicator.transform.localPosition = Vector3.zero;
-			targetingIndicator.transform.localRotation = Quaternion.identity;
+			targetingIndicator.transform.SetParent(target.transform, false);
 			targetingIndicator.renderer.enabled = true;
 			isCurrentlyTargeting = true;
 		}
