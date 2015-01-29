@@ -23,6 +23,7 @@ public class SelectMoveState : InGameState {
 		gameManager.GetGUIManager().ShowMoveSelectCountdown();
 		gameManager.GetGUIManager().SetMoveSelectCountdownMinMax(0, turnDuration);
 		gameManager.GetGUIManager().SetMoveSelectCountdownValue(turnDuration);
+		gameManager.ShowTargetingIndicator();
 		timeElapsed = turnDuration;
 
 		// Move the camera back into place.

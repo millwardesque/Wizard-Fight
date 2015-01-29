@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject targetingIndicatorPrefab;
 	public InGameState[] stateTypes;
 
-	Queue<CombatantAction> queuedActions;
+	List<CombatantAction> queuedActions;
 	InGameState state;
 
 	/// <summary>
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour {
 		}
 		targetingIndicator = (GameObject)Instantiate(targetingIndicatorPrefab);
 
-		queuedActions = new Queue<CombatantAction>();
+		queuedActions = new List<CombatantAction>();
 
 		// Disable the targeting indicator.
 		OnNothingSelected();
@@ -97,14 +97,30 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="action">Action.</param>
 	public void QueueAction(CombatantAction action) {
-		queuedActions.Enqueue(action);
+		queuedActions.Add(action);
+		queuedActions.Sort (ActionQueueSorter);
+	}
+
+	int ActionQueueSorter(CombatantAction a, CombatantAction b) {
+		if (a == null && b == null) {
+			return 0;
+		}
+		else if (a == null) {
+			return -1;
+		}
+		else if (b == null) {
+			return 1;
+		}
+		else {
+			return a.CastTime.CompareTo(b.CastTime);
+		}
 	}
 	
 	/// <summary>
 	/// Gets the queued actions.
 	/// </summary>
 	/// <returns>The queued actions.</returns>
-	public Queue<CombatantAction> GetQueuedActions() {
+	public List<CombatantAction> GetQueuedActions() {
 		return queuedActions;
 	}
 
@@ -178,6 +194,14 @@ public class GameManager : MonoBehaviour {
 
 		// Final cleanup.
 		Debug.Log ("Combatant " + combatant.name + " has died.");
+	}
+
+	public void ShowTargetingIndicator() {
+		targetingIndicator.renderer.enabled = true;
+	}
+
+	public void HideTargetingIndicator() {
+		targetingIndicator.renderer.enabled = false;
 	}
 
 	/// <summary>

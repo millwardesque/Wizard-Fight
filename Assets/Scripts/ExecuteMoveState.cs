@@ -17,6 +17,7 @@ public class ExecuteMoveState : InGameState {
 
 	public override void OnEnter (GameManager gameManager) {
 		gameManager.GetGUIManager().HideActions();
+		gameManager.HideTargetingIndicator();
 		isProcessingQueue = false;
 		currentAction = null;
 	}
@@ -30,9 +31,10 @@ public class ExecuteMoveState : InGameState {
 	}
 
 	void ProcessNextQueueItem() {
-		Queue<CombatantAction> queue = gameManager.GetQueuedActions();
+		List<CombatantAction> queue = gameManager.GetQueuedActions();
 		if (queue.Count > 0) {
-			currentAction = queue.Dequeue();
+			currentAction = queue[0];
+			queue.RemoveAt(0);
 
 			if (currentAction != null && currentAction.CanExecute()) {
 				StartCoroutine(ExecuteAction());

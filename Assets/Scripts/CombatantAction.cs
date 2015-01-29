@@ -15,16 +15,17 @@ public enum CombatantActionState {
 public class CombatantAction : MonoBehaviour {
 	public GameObject Sender { get; set; }
 	public GameObject Receiver { get; set; }
+	public float CastTime;
 	protected bool canGoToNextState = false;
 	protected delegate IEnumerator StateUpdateDelegate();
 	protected StateUpdateDelegate StateUpdate;
 	CombatantActionState state = CombatantActionState.Waiting;
-
+	
 	void Start() {
 		state = CombatantActionState.Waiting;
 		StateUpdate = WaitingUpdate;
-
 	}
+
 	/// <summary>
 	/// Virtual method for performing the method.
 	/// </summary>

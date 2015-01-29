@@ -29,23 +29,30 @@ public class FixedDamageAction : CombatantAction {
 	/// <param name="sender">Sender.</param>
 	/// <param name="receiver">Receiver.</param>
 	/// <param name="damageDealt">Damage dealt.</param>
-	public FixedDamageAction Initialize(string name, GameObject sender, GameObject receiver, int damageDealt) {
+	public FixedDamageAction Initialize(string name, GameObject sender, GameObject receiver, int damageDealt, float castTime) {
 		this.name = name;
 		this.Sender = sender;
 		this.Receiver = receiver;
 		this.DamageDealt = damageDealt;
+		this.CastTime = castTime;
 
 		return this;
 	}
 
 	public override bool CanExecute() {
-		return (this.Sender != null && this.Receiver != null && Receiver.GetComponent<Health>() && Receiver.GetComponent<CharacterController>());
+		return (this.Sender != null && this.Receiver != null && 
+		        Sender.GetComponent<Health>() && Sender.GetComponent<Health>().IsAlive() && Sender.GetComponent<CharacterController>() &&
+		        Receiver.GetComponent<Health>() && Receiver.GetComponent<Health>().IsAlive() && Receiver.GetComponent<CharacterController>());
 	}
 
 	/// <summary>
 	/// Update method for the pre-cast setup action state.
 	/// </summary>
 	protected override IEnumerator PrecastSetupUpdate() {
+		if (!CanExecute()) {
+			yield return null;
+		}
+
 		// Move the camera into position.
 		Vector3 senderPosition = Sender.transform.position;
 		Vector3 receiverPosition = Receiver.transform.position;
@@ -67,6 +74,10 @@ public class FixedDamageAction : CombatantAction {
 	/// </summary>
 	/// <returns>The update.</returns>
 	protected override IEnumerator PrecastUpdate() {
+		if (!CanExecute()) {
+			yield return null;
+		}
+
 		float precastDuration = 1.5f;
 		GameObject precastFXObj = (GameObject)GameObject.Instantiate(precastFX);
 		precastFXObj.transform.SetParent(Sender.transform, false);
@@ -81,6 +92,10 @@ public class FixedDamageAction : CombatantAction {
 	/// Update method for the Cast action state.
 	/// </summary>
 	protected override IEnumerator CastUpdate() {
+		if (!CanExecute()) {
+			yield return null;
+		}
+
 		GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
 		
 		// Create the special FX.

@@ -11,5 +11,6 @@ public class GameOverState : InGameState {
 	public override void OnExit(GameManager gameManager) {
 		gameManager.GetGUIManager().HideGameOverPanel();
 		gameManager.GetGUIManager().ShowPauseButton();
+
 	}
 }

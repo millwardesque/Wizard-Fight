@@ -25,10 +25,10 @@ public class CombatantActions : MonoBehaviour {
 		actions = new List<CombatantAction>();
 
 		// @TODO Load these per-combatant from a file / player-prefs / DB.
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Blast (7)", gameObject, null, 7));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Wave (3)", gameObject, null, 3));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Slap (1)", gameObject, null, 1));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Burn (5)", gameObject, null, 5));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Blast (7)", gameObject, null, 7, 5));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Wave (3)", gameObject, null, 3, 3));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Slap (1)", gameObject, null, 1, 1));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Burn (5)", gameObject, null, 5, 4));
 	}
 
 	/// <summary>
