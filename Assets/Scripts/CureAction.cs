@@ -1,11 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Fixed damage action.
-/// </summary>
-public class FixedDamageAction : CombatantAction {
-	public int DamageDealt { get; set; }
+public class CureAction : CombatantAction {
+	public int CureAmount { get; set; }
 	public GameObject actionFX;
 	public GameObject precastFX;
 	
@@ -13,12 +10,12 @@ public class FixedDamageAction : CombatantAction {
 
 	void Start() {
 		if (actionFX == null) {
-			Debug.LogWarning("FixedDamagerAction '" + name + "' has no action FX attached.");
+			Debug.LogWarning("CureAction '" + name + "' has no action FX attached.");
 		}
-
+		
 		GameObject gameCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
 		if (!gameCameraObj || !gameCameraObj.GetComponent<CameraMoves>()) {
-			Debug.LogError("Unable to intiailize FixedDamageAction: Can't find camera with tag MainCamera, or camera doesn't have CameraMoves action attached.");
+			Debug.LogError("Unable to intiailize CureAction: Can't find camera with tag MainCamera, or camera doesn't have CameraMoves action attached.");
 		}
 		gameCamera = gameCameraObj.GetComponent<CameraMoves>();
 	}
@@ -26,19 +23,21 @@ public class FixedDamageAction : CombatantAction {
 	/// <summary>
 	/// Initialize the specified sender, receiver and damageDealt.  Shortcut method rather than setting the properties individually.
 	/// </summary>
+	/// <param name="name">Name.</param>
 	/// <param name="sender">Sender.</param>
 	/// <param name="receiver">Receiver.</param>
-	/// <param name="damageDealt">Damage dealt.</param>
-	public FixedDamageAction Initialize(string name, GameObject sender, GameObject receiver, int damageDealt, float castTime) {
+	/// <param name="cureAmounts">Cure amounts.</param>
+	/// <param name="castTime">Cast time.</param>
+	public CureAction Initialize(string name, GameObject sender, GameObject receiver, int cureAmount, float castTime) {
 		this.name = name;
 		this.Sender = sender;
 		this.Receiver = receiver;
-		this.DamageDealt = damageDealt;
+		this.CureAmount = cureAmount;
 		this.CastTime = castTime;
-
+		
 		return this;
 	}
-
+	
 	public override bool CanExecute() {
 		return (this.Sender != null && this.Receiver != null && 
 		        Sender.GetComponent<Health>() && Sender.GetComponent<Health>().IsAlive() && Sender.GetComponent<CharacterController>() &&
@@ -54,35 +53,35 @@ public class FixedDamageAction : CombatantAction {
 		}
 
 		float precastSetupDuration = 1.5f;
-
+		
 		// Move the camera into position.
 		float cameraDistance = 15.0f;
 		gameCamera.LineUpActors(Sender, Receiver, cameraDistance, precastSetupDuration);
 		yield return new WaitForSeconds(precastSetupDuration);
-
+		
 		canGoToNextState = true;
 		yield return null;
 	}
-
+	
 	/// <summary>
-	/// Update method for the prec-cast action state.
+	/// Update method for the pre-cast action state.
 	/// </summary>
 	/// <returns>The update.</returns>
 	protected override IEnumerator PrecastUpdate() {
 		if (!CanExecute()) {
 			yield return null;
 		}
-
+		
 		float precastDuration = 1.5f;
 		GameObject precastFXObj = (GameObject)GameObject.Instantiate(precastFX);
 		precastFXObj.transform.SetParent(Sender.transform, false);
 		yield return new WaitForSeconds(precastDuration);
-
+		
 		canGoToNextState = true;
 		GameObject.Destroy(precastFXObj);
 		yield return null;
 	}
-	
+
 	/// <summary>
 	/// Update method for the Cast action state.
 	/// </summary>
@@ -90,7 +89,7 @@ public class FixedDamageAction : CombatantAction {
 		if (!CanExecute()) {
 			yield return null;
 		}
-
+		
 		GameObject launchPosition = Sender.GetComponent<CombatantActions>().GetLaunchPosition();
 		
 		// Create the special FX.
@@ -101,8 +100,8 @@ public class FixedDamageAction : CombatantAction {
 		
 		// Shoot FX at Receiver and wait for it finish.
 		yield return StartCoroutine(newFX.GetComponent<ActionFX>().Fire(Receiver, Receiver.GetComponent<CharacterController>().center));
-
-		Receiver.GetComponent<Health>().AddHealth(-DamageDealt);
+		
+		Receiver.GetComponent<Health>().AddHealth(CureAmount);
 		canGoToNextState = true;
 		yield return null;
 	}

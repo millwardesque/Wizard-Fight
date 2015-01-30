@@ -11,6 +11,7 @@ public class GUIManager : MonoBehaviour {
 	public GameObject actionsPanel;
 	public GameObject pauseButton;
 	public GameObject youWinPanel;
+	public GameObject statusPanel;
 	GameManager gameManager;
 	EventSystem eventSystem;
 	bool refreshActionButtons = false;	// Flag to indicate whether to refresh the action buttons.
@@ -41,6 +42,11 @@ public class GUIManager : MonoBehaviour {
 		// Make sure the Pause buttons is set.
 		if (!pauseButton) {
 			Debug.LogError("Unable to initialize GUI Manager: No Pause button is set.");
+		}
+
+		// Make sure the Status label is set.
+		if (!statusPanel) {
+			Debug.LogError("Unable to initialize GUI Manager: No Status panel is set.");
 		}
 
 		// Find and store the Game Manager.
@@ -239,5 +245,17 @@ public class GUIManager : MonoBehaviour {
 	
 	public void HidePauseButton() {
 		pauseButton.SetActive(false);
+	}
+
+	public void ShowStatusPanel() {
+		statusPanel.SetActive (true);
+	}
+	
+	public void HideStatusPanel() {
+		statusPanel.SetActive(false);
+	}
+
+	public void SetStatusLabelText(string text) {
+		statusPanel.GetComponentInChildren<Text>().text = text;
 	}
 }

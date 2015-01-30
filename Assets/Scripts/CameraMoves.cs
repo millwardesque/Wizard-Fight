@@ -10,6 +10,26 @@ public class CameraMoves : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Lines up the camera directly behind two actors
+	/// </summary>
+	/// <param name="closeActor">The actor that should be closest to the camera.</param>
+	/// <param name="farActor">The actor that should be furthest from the camera.</param>
+	/// <param name="distanceFromCloseActor">Distance the camera should be from close actor.</param>
+	/// <param name="duration">Duration of the camera move.</param>
+	public void LineUpActors(GameObject closeActor, GameObject farActor, float distanceFromCloseActor, float duration) {
+		Vector3 closePosition = closeActor.transform.position;
+		Vector3 farPosition = farActor.transform.position;
+		Vector3 cameraPosition = closePosition - ((farPosition - closePosition).normalized * distanceFromCloseActor);
+
+		// Keep the camera at its current height
+		cameraPosition.y = gameCamera.transform.position.y;
+		
+		MoveAndLook(cameraPosition, farPosition, duration); // Once the camera is oriented, continue on.
+		iTween.LookTo (closeActor, closePosition, duration / 2.0f);
+		iTween.LookTo (farActor, farPosition, duration / 2.0f);
+	}
+
+	/// <summary>
 	/// Moves the camera and looks at an object
 	/// </summary>
 	/// <param name="position">Position.</param>

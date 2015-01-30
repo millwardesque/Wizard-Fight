@@ -25,10 +25,16 @@ public class CombatantActions : MonoBehaviour {
 		actions = new List<CombatantAction>();
 
 		// @TODO Load these per-combatant from a file / player-prefs / DB.
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Blast (7)", gameObject, null, 7, 5));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Wave (3)", gameObject, null, 3, 3));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Slap (1)", gameObject, null, 1, 1));
-		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Burn (5)", gameObject, null, 5, 4));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Blast (-7)", gameObject, null, 7, 5));
+		actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Energy Wave (-3)", gameObject, null, 3, 3));
+		if (gameObject.tag == "Player") {
+			actions.Add(((CureAction)actionsManager.GetAction("CureAction")).Initialize("Heal (+5)", gameObject, null, 5, 4));
+			actions.Add(((CureAction)actionsManager.GetAction("CureAction")).Initialize("Treat (+1)", gameObject, null, 1, 1));
+		}
+		else {
+			actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Boma Ye (-5)", gameObject, null, 5, 4));
+			actions.Add(((FixedDamageAction)actionsManager.GetAction("FixedDamageAction")).Initialize("Slap (-1)", gameObject, null, 1, 1));
+		}
 	}
 
 	/// <summary>

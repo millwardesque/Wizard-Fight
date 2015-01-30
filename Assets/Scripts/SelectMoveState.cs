@@ -19,10 +19,12 @@ public class SelectMoveState : InGameState {
 	}
 
 	public override void OnEnter (GameManager gameManager) {
-		gameManager.GetGUIManager().ShowActions();
-		gameManager.GetGUIManager().ShowMoveSelectCountdown();
-		gameManager.GetGUIManager().SetMoveSelectCountdownMinMax(0, turnDuration);
-		gameManager.GetGUIManager().SetMoveSelectCountdownValue(turnDuration);
+		GUIManager guiManager = gameManager.GetGUIManager();
+		guiManager.ShowActions();
+		guiManager.ShowMoveSelectCountdown();
+		guiManager.SetMoveSelectCountdownMinMax(0, turnDuration);
+		guiManager.SetMoveSelectCountdownValue(turnDuration);
+		guiManager.HideStatusPanel();
 		gameManager.ShowTargetingIndicator();
 		timeElapsed = turnDuration;
 

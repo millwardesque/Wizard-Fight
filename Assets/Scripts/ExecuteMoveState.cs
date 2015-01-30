@@ -18,6 +18,11 @@ public class ExecuteMoveState : InGameState {
 	public override void OnEnter (GameManager gameManager) {
 		gameManager.GetGUIManager().HideActions();
 		gameManager.HideTargetingIndicator();
+
+		GUIManager guiManager = gameManager.GetGUIManager();
+		guiManager.ShowStatusPanel();
+		guiManager.SetStatusLabelText("");
+
 		isProcessingQueue = false;
 		currentAction = null;
 	}
@@ -53,6 +58,7 @@ public class ExecuteMoveState : InGameState {
 	/// </summary>
 	/// <returns>The action.</returns>
 	IEnumerator ExecuteAction() {
+		gameManager.GetGUIManager().SetStatusLabelText("Casting " + currentAction.name);
 		yield return StartCoroutine(currentAction.DoAction());
 
 		// After the action animation has completed, move to the next action in the list.

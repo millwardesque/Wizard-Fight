@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour {
 			isCurrentlyTargeting = true;
 		}
 		else {
-			targetingIndicator.transform.parent = null;
+			targetingIndicator.transform.SetParent(null);
 			targetingIndicator.renderer.enabled = false;
 			isCurrentlyTargeting = false;
 		}
