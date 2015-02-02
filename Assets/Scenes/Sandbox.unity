@@ -8224,7 +8224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84d2d50f64e214029b6db3aad9a28487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetingIndicatorPrefab: {fileID: 152086, guid: 87acaa17624f44bd59af1045816b32dd,
+  targetingIndicatorPrefab: {fileID: 114478, guid: 87acaa17624f44bd59af1045816b32dd,
     type: 2}
   stateTypes:
   - {fileID: 11490038, guid: d3ce47f83d9de403da956ab8d29d8a7d, type: 2}
